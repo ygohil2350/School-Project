@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16.3-alpine
+    container_name: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  school-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: school-api
+    environment:
+      DATABASE_URL: postgres://school_user:school_password@postgres:5432/school_db
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
